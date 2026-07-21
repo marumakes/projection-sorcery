@@ -1,4 +1,4 @@
-"""Stage 1: Capture a short burst of frames from the robot camera.
+"""Stage 1: Capture a short burst of frames from the  camera.
 
 Goal: grab NUM_FRAMES frames spanning roughly CAPTURE_DURATION_S seconds,
 each tagged with the timestamp it was captured at. Later stages
@@ -21,7 +21,7 @@ from projection_sorcery.config import (
 
 @dataclass
 class CapturedFrame:
-    image: np.ndarray  # BGR, as returned by cv2/gretchen
+    image: np.ndarray 
     timestamp: float
     index: int
 
@@ -46,13 +46,6 @@ def capture_frames(
 
 
 def save_debug_frames(frames: list[CapturedFrame], out_dir=RAW_FRAMES_DIR) -> None:
-    """Write each frame to out_dir for visual debugging.
-
-    Hints:
-    - Use cv2.imwrite. Frames are already in BGR, which is what cv2.imwrite expects.
-    - Name files so they sort in capture order, e.g. f"frame_{f.index}_{f.timestamp}.png".
-    - Make sure out_dir exists (Path.mkdir(parents=True, exist_ok=True)).
-    """
     out_dir.mkdir(parents=True, exist_ok=True)
 
     for frame in frames:
@@ -64,11 +57,6 @@ def save_debug_frames(frames: list[CapturedFrame], out_dir=RAW_FRAMES_DIR) -> No
          
 
 def main():
-    # TODO(you): wire it together:
-    # 1. build a camera via get_camera_source()
-    # 2. call capture_frames(...)
-    # 3. call save_debug_frames(...)
-    # 4. print a short summary (how many frames, over what real elapsed time)
     camera = get_camera_source()
     camera.start()
     frames = capture_frames(camera)
