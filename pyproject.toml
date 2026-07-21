@@ -1,0 +1,37 @@
+[project]
+name = "projection-sorcery"
+version = "0.1.0"
+description = "JJK-inspired Projection Sorcery afterimage pipeline for the Gretchen robot"
+requires-python = ">=3.12"
+dependencies = [
+    "dynamixel-sdk>=4.0.5",
+    "gretchen",
+    "numpy>=2.5.1",
+    "openai>=2.46.0",
+    "opencv-python>=5.0.0.93",
+    "pillow>=12.3.0",
+    "python-dotenv>=1.2.2",
+    "ultralytics>=8.4.101",
+]
+
+[tool.uv.sources]
+gretchen = { path = "../../snu_robotics/gretchen/course_material/lib", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.22",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/projection_sorcery"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]  # pyflakes + pycodestyle + import sorting

@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+
+# Generated debug/run outputs (regenerate by running the pipeline)
+debug_output/*/*
+!debug_output/*/.gitkeep
+
+# YOLO weights (downloaded automatically by ultralytics on first run)
+*.pt
