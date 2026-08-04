@@ -24,3 +24,8 @@ POSE_DEBUG_DIR = DEBUG_OUTPUT_DIR / "pose_debug"
 STABILIZED_DIR = DEBUG_OUTPUT_DIR / "stabilized"
 COMPOSITE_DIR = DEBUG_OUTPUT_DIR / "composite"
 ANIME_DIR = DEBUG_OUTPUT_DIR / "anime"
+
+
+# --- Ultralytics segmentation ---
+YOLO_SEG_MODEL = "yolo26n-seg.pt"
+COCO_CLASS_ID = 0
