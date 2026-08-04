@@ -340,7 +340,7 @@ wheels = [
 [[package]]
 name = "gretchen"
 version = "0.4"
-source = { editable = "../../snu_robotics/gretchen/course_material/lib" }
+source = { editable = "../../uni-stuff/snu_robotics/gretchen/course_material/lib" }
 
 [[package]]
 name = "h11"
@@ -1070,7 +1070,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dynamixel-sdk", specifier = ">=4.0.5" },
-    { name = "gretchen", editable = "../../snu_robotics/gretchen/course_material/lib" },
+    { name = "gretchen", editable = "../../uni-stuff/snu_robotics/gretchen/course_material/lib" },
     { name = "numpy", specifier = ">=2.5.1" },
     { name = "openai", specifier = ">=2.46.0" },
     { name = "opencv-python", specifier = ">=5.0.0.93" },

@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-gretchen = { path = "../../snu_robotics/gretchen/course_material/lib", editable = true }
+gretchen = { path = "../../uni-stuff/snu_robotics/gretchen/course_material/lib", editable = true }
 
 [build-system]
 requires = ["hatchling"]
