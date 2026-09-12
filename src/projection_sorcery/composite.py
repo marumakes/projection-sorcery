@@ -31,32 +31,20 @@ class CompositeResult:
     image: np.ndarray  # BGR
     frame_count: int
 
-
+# Opacity for each cutout in the trail, oldest first.
 def trail_opacities(count: int) -> list[float]:
-    """Opacity for each cutout in the trail, oldest first.
+    if count == 1:
+        return [TRAIL_OPACITY_NEWEST]
 
-    TODO: fill this in. This is the knob that decides what the effect actually
-    looks like, so it is left for you.
+    opacities = []
 
-    The last element should be TRAIL_OPACITY_NEWEST (1.0) - the subject's current
-    position is solid - and earlier elements fade back towards TRAIL_OPACITY_OLDEST.
-    A straight linear ramp is the obvious starting point:
+    for x in range(count):
+        t = x / (count - 1)
+        opacity = (TRAIL_OPACITY_OLDEST + (TRAIL_OPACITY_NEWEST - TRAIL_OPACITY_OLDEST) * t * t)
+        opacities.append(opacity)
 
-        return linear_opacities(count)
-
-    but an ease-out curve (older images dropping off faster) tends to read more like
-    an animation smear than an evenly-spaced stack of ghosts. Worth trying both.
-
-    Args:
-        count: number of cutouts in the trail, always >= 1.
-
-    Returns:
-        `count` floats in 0.0-1.0, oldest first, matching the frame order.
-    """
-    raise NotImplementedError(
-        "trail_opacities is a stub - return linear_opacities(count) for a plain ramp to start with"
-    )
-
+    return opacities
+    
 
 # Even fade from oldest to newest. The plainest ramp that produces a visible trail.
 def linear_opacities(count: int) -> list[float]:
