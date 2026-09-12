@@ -16,6 +16,8 @@ import numpy as np
 
 from projection_sorcery.capture import CapturedFrame
 from projection_sorcery.config import (
+    MIN_MATCH_COUNT,
+    ORB_FEATURES,
     RAW_FRAMES_DIR,
     SEGMENTED_DIR,
     STABILIZED_DIR,
@@ -41,34 +43,59 @@ class StabilizedFrame:
     homography: np.ndarray  # 3x3, maps this frame's pixels onto frame 0's
 
 
+# Estimate the camera drift of each raw frame relative to raw_frames[0].
 def estimate_homographies(raw_frames: list[CapturedFrame]) -> list[np.ndarray]:
-    """Estimate the camera drift of each raw frame relative to raw_frames[0].
+    homographies = [IDENTITY_HOMOGRAPHY.copy()]
 
-    TODO: fill this in.
+    orb = cv2.ORB_create(ORB_FEATURES)
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
-    Sketch: detect ORB features (config.ORB_FEATURES) in frame 0 and in frame N,
-    match them, and once at least config.MIN_MATCH_COUNT survive, recover the
-    transform with cv2.findHomography(..., cv2.RANSAC). cv2.findTransformECC is the
-    alternative if feature matching proves flaky on your background.
+    identity_image = raw_frames[0].image
+    identity_kp, identity_des = orb.detectAndCompute(identity_image, None)
 
-    Masking the person out before matching helps a lot - their limbs are the one
-    part of the scene that genuinely moves, so they poison the estimate.
+    if identity_des is None:
+        return [IDENTITY_HOMOGRAPHY.copy() for _ in raw_frames]
 
-    Args:
-        raw_frames: the burst in chronological order. Full BGR frames, background
-            intact. raw_frames[0] is the reference everything warps onto.
+    for x in range(1, len(raw_frames)):
+        image = raw_frames[x].image
+        keypoint, descriptor = orb.detectAndCompute(image, None)
 
-    Returns:
-        One 3x3 float64 matrix per input frame, in the same order. Element 0 must be
-        the identity (frame 0 is the reference). Return IDENTITY_HOMOGRAPHY for any
-        frame you cannot solve rather than None - apply_homographies treats that as
-        "no drift" and the run completes instead of crashing.
-    """
-    raise NotImplementedError(
-        "estimate_homographies is a stub - see the docstring, or use "
-        "identity_homographies(raw_frames) to pass frames through unstabilised"
-    )
+        if descriptor is None:
+            homographies.append(IDENTITY_HOMOGRAPHY.copy())
+            continue
 
+        matches = bf.match(identity_des, descriptor)
+
+        if len(matches) < MIN_MATCH_COUNT:
+            print(
+                f"Not enough matches are found - "
+                f"{len(matches)}/{MIN_MATCH_COUNT}"
+            )
+            homographies.append(IDENTITY_HOMOGRAPHY.copy())
+            continue
+
+        src_points = np.float32(
+            [keypoint[m.trainIdx].pt for m in matches]
+        ).reshape(-1, 1, 2)
+
+        dst_points = np.float32(
+            [identity_kp[m.queryIdx].pt for m in matches]
+        ).reshape(-1, 1, 2)
+
+        homography, mask = cv2.findHomography(
+            src_points,
+            dst_points,
+            cv2.RANSAC,
+            5.0,
+        )
+
+        if homography is None:
+            homographies.append(IDENTITY_HOMOGRAPHY.copy())
+            continue
+
+        homographies.append(homography)
+
+    return homographies
 
 # Escape hatch: treat the camera as perfectly still. Useful for testing the stages downstream.
 def identity_homographies(raw_frames: list[CapturedFrame]) -> list[np.ndarray]:
