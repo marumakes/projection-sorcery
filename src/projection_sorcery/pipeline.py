@@ -127,8 +127,18 @@ def _stabilize(trail, segmented, debug: DebugOutput):
 
 
 def _composite(trail, stabilized, debug: DebugOutput):
-    # The trail's earliest frame is the space stabilisation warped everything into.
-    result = composite_trail(trail[0].image, stabilized)
+    # The newest frame is the plate the trail is painted onto, so it's the one baked into
+    # the canvas at full visibility "for free" - which is correct, since it's supposed to be
+    # fully opaque anyway. Using the OLDEST frame here instead (as this used to) makes the
+    # oldest cutout's own alpha-paste a no-op (there's no background left to blend with under
+    # its own baked-in pixels), so it always renders fully solid regardless of its assigned
+    # opacity - leaving two equally-opaque figures with no way to tell which one is newest.
+    #
+    # This assumes the newest raw frame shares the same coordinate space as the stabilized
+    # cutouts, which holds for identity homographies (a static webcam/video source) but not
+    # for a camera that genuinely moved (the "gretchen" backend) - there, this plate would
+    # need warping into frame 0's space the same way the cutouts are.
+    result = composite_trail(trail[-1].image, stabilized)
 
     if debug is DebugOutput.SAVE:
         path = save_debug_composite(result)

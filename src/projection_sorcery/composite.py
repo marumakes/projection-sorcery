@@ -31,19 +31,14 @@ class CompositeResult:
     image: np.ndarray  # BGR
     frame_count: int
 
-# Opacity for each cutout in the trail, oldest first.
+# Opacity for each cutout in the trail, oldest first. Flat two-tier split rather than a
+# gradient: the anime restyle only needs to tell newest apart from "everything older", and
+# a graduated curve leaves most of the older frames too close to fully opaque to read as such.
 def trail_opacities(count: int) -> list[float]:
     if count == 1:
         return [TRAIL_OPACITY_NEWEST]
 
-    opacities = []
-
-    for x in range(count):
-        t = x / (count - 1)
-        opacity = (TRAIL_OPACITY_OLDEST + (TRAIL_OPACITY_NEWEST - TRAIL_OPACITY_OLDEST) * t * t)
-        opacities.append(opacity)
-
-    return opacities
+    return [TRAIL_OPACITY_OLDEST] * (count - 1) + [TRAIL_OPACITY_NEWEST]
     
 
 # Even fade from oldest to newest. The plainest ramp that produces a visible trail.
@@ -111,12 +106,12 @@ def load_stabilized_frames(in_dir=STABILIZED_DIR) -> list[StabilizedFrame]:
     ]
 
 
-# The plate the trail is painted onto: the earliest raw frame, which is also
-# the coordinate space stabilisation warped everything into.
+# The plate the trail is painted onto: the newest raw frame, so the newest cutout is baked
+# in at full visibility "for free" instead of a no-op alpha-paste onto its own pixels.
 def load_background_plate(in_dir=RAW_FRAMES_DIR) -> np.ndarray:
     loaded = load_images(in_dir, ImageMode.COLOR)
 
-    return loaded[0][2]
+    return loaded[-1][2]
 
 
 def main():

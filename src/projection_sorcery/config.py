@@ -135,13 +135,15 @@ Preserve the camera perspective and overall composition.
 
 Preserve the general layout of the environment and the position of major objects within the scene.
 
+Preserve the time of day, weather, and overall lighting condition shown in the input (for example: overcast daylight stays overcast daylight). Stylise the existing light into flat/cel-shaded anime lighting without changing when in the day it is or inventing a different sky, weather, or light source than what is already there.
+
 ### What may change
 
 Change the photographic rendering into an anime illustration for the newest figure.
 
 Change every older afterimage from a coloured figure into a monochrome blue/cyan scanline ghost as described above.
 
-Change the real-world lighting into stylised cinematic anime lighting.
+Change the real-world lighting into stylised flat/cel-shaded anime lighting, matching the same time of day, weather, and light source already present in the photo.
 
 Stylise the background and surrounding environment so that it looks like part of the same anime illustration. Simplify photographic details where appropriate, while keeping the general layout, perspective, and major environmental elements recognisable.
 
@@ -161,6 +163,7 @@ Adapt colours, textures, and environmental details of the background to fit the 
 * Invent a decorative or generic afterimage pattern (e.g. a repeating row of separate silhouette shapes) that is not directly traceable to a faint duplicate or blur already present in the input
 * Split a single swept/motion-blurred limb into multiple separate floating shapes — keep it as one continuous streak
 * Distort or obscure the motion trail's silhouette or direction
+* Invent a different time of day, weather, or sky than what is already in the input (e.g. turning overcast daylight into a sunset or night sky)
 * Change the camera angle or perspective
 * Crop the image
 * Replace the scene with a different environment
