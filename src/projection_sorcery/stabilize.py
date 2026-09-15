@@ -16,6 +16,7 @@ import numpy as np
 
 from projection_sorcery.capture import CapturedFrame
 from projection_sorcery.config import (
+    CAMERA_BACKEND,
     MIN_MATCH_COUNT,
     ORB_FEATURES,
     RAW_FRAMES_DIR,
@@ -139,7 +140,15 @@ def stabilize_frames(
     raw_frames: list[CapturedFrame],
     segmented: list[SegmentedFrame],
 ) -> list[StabilizedFrame]:
-    return apply_homographies(segmented, estimate_homographies(raw_frames))
+    # A fixed webcam does not drift during a capture burst. Estimating homographies
+    # from it anyway ends up tracking the moving subject instead of camera motion,
+    # since nothing excludes the foreground from the ORB feature matching.
+    if CAMERA_BACKEND == "webcam":
+        homographies = identity_homographies(raw_frames)
+    else:
+        homographies = estimate_homographies(raw_frames)
+
+    return apply_homographies(segmented, homographies)
 
 
 def save_debug_stabilized(frames: list[StabilizedFrame], out_dir=STABILIZED_DIR) -> None:
