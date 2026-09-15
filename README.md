@@ -6,7 +6,7 @@ It's inspired by Naoya Zenin's projection sorcery cursed technique from Jujutsu 
 
 ![Pipeline stages: raw capture, pose detection, segmentation, stabilization, composite trail, anime restyle](docs/pipeline-demo.gif)
 
-Demo footage: [Matias_Luge](https://pixabay.com/users/matias_luge-4388604/) via [Pixabay](https://pixabay.com/).
+For demo purposes, I asked Claude Code to add a `--video` flag to the pipeline so it can read frames from an uploaded video instead of a live camera, and ran some royalty-free stock footage through it. Footage: [Matias_Luge](https://pixabay.com/users/matias_luge-4388604/) via [Pixabay](https://pixabay.com/).
 
 ## Pipeline
 
