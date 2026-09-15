@@ -48,6 +48,7 @@ class AnimeStage(Enum):
 def run(
     debug: DebugOutput = DebugOutput.SAVE,
     anime_stage: AnimeStage = AnimeStage.RUN,
+    video_path: str | None = None,
 ) -> None:
     if debug is DebugOutput.SAVE:
         # Stale frames from a longer previous run would otherwise be picked up
@@ -55,7 +56,7 @@ def run(
         for directory in DEBUG_DIRS:
             clear_debug_dir(directory)
 
-    frames = _capture(debug)
+    frames = _capture(debug, video_path)
     trail = _select_trail(frames, debug)
     segmented = _segment(trail, debug)
     stabilized = _stabilize(trail, segmented, debug)
@@ -70,8 +71,8 @@ def run(
     print(f"Wrote stylised frame to {path}")
 
 
-def _capture(debug: DebugOutput):
-    camera = get_camera_source()
+def _capture(debug: DebugOutput, video_path: str | None = None):
+    camera = get_camera_source(video_path)
     camera.start()
     try:
         frames = capture_frames(camera)
@@ -159,11 +160,17 @@ def main():
         action="store_true",
         help="do not write intermediate frames to debug_output/",
     )
+    parser.add_argument(
+        "--video",
+        metavar="PATH",
+        help="read frames from a video file instead of the live camera",
+    )
     args = parser.parse_args()
 
     run(
         debug=DebugOutput.SKIP if args.no_debug else DebugOutput.SAVE,
         anime_stage=AnimeStage.SKIP if args.skip_anime else AnimeStage.RUN,
+        video_path=args.video,
     )
 
 

@@ -18,3 +18,7 @@ debug_output/*/*
 
 # YOLO weights (downloaded automatically by ultralytics on first run)
 *.pt
+
+# Stock/source footage used to generate demo assets - licensed for reuse, not
+# for standalone redistribution, so it stays local rather than in the repo.
+demo-video.mp4
